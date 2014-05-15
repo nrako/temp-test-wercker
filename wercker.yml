@@ -11,8 +11,9 @@ build:
         name: 'Requirements'
         code: |
           echo $APP_VERSION
-          git show-ref --tags
-          git show-ref --tags test
+          
+          # git show-ref --tags
+          # git show-ref --tags test
 
           # tagref=$(git show-ref --tags "$APP_VERSION")
           #
