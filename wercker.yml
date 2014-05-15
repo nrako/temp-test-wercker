@@ -11,7 +11,7 @@ build:
         name: 'Requirements'
         code: |
           echo $APP_VERSION
-          
+
           # git show-ref --tags
           # git show-ref --tags test
 
@@ -36,6 +36,7 @@ deploy:
         name: 'Export environment variables'
         code: |
           export APP_VERSION=$(cat package.json | underscore extract 'version' --outfmt text)
+          git fetch -t
           export BODY_RELEASE=$(git log `git describe --tags --abbrev=0`..HEAD --oneline)
 
           echo $APP_VERSION
