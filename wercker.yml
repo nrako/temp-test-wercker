@@ -1,0 +1,50 @@
+box: nrako/node-webkit
+build:
+  steps:
+
+    - script:
+        name: 'Export environment variables'
+        code: |
+          export APP_VERSION=$(cat package.json | underscore extract 'version' --outfmt text)
+
+    - script:
+        name: 'Requirements'
+        code: |
+          echo $APP_VERSION
+          git show-ref --tags
+          git show-ref --tags test
+
+          # tagref=$(git show-ref --tags "$APP_VERSION")
+          #
+          # echo $tagref
+          #
+          # if [ -n "$tagref" ]; then
+          #   fail "Tag $APP_VERSION already exists";
+          # fi
+
+    - script:
+        name: 'simulate build'
+        code: |
+          cp README.md $WERCKER_OUTPUT_DIR/
+          cp package.json $WERCKER_OUTPUT_DIR/
+
+deploy:
+  steps:
+
+    - script:
+        name: 'Export environment variables'
+        code: |
+          export APP_VERSION=$(cat package.json | underscore extract 'version' --outfmt text)
+          export BODY_RELEASE=$(git log `git describe --tags --abbrev=0`..HEAD --oneline)
+
+          echo $APP_VERSION
+          echo $BODY_RELEASE
+
+    - github-create-release:
+        token: $GITHUB_TOKEN
+        tag_name: $APP_VERSION
+        title: Release $APP_VERSION
+        body: $BODY_RELEASE
+        tag: $APP_VERSION
+        draft: true
+        export-id: true
